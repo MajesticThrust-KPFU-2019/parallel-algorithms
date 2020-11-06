@@ -46,7 +46,7 @@ double avg(int **arr, size_t m, size_t n) {
 }
 
 std::pair<int, int> minmax(int **arr, size_t m, size_t n) {
-  int min, max;
+  int min = arr[0][0], max = arr[0][0];
   for (size_t i = 0; i < m; i++) {
     // skip the first element
     size_t j0 = (i == 0) ? 1 : 0;
