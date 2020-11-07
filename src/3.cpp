@@ -17,13 +17,20 @@
 #include <omp.h>
 
 int main() {
-  int a = 1, b = 2;
+  int a = 1;
+  char b = 2;
+  int c[1000] = {0};
+  int d = 3;
 
-  printf("Before first parallel: a = %d, b = %d\n", a, b);
-#pragma omp parallel num_threads(2) private(a) firstprivate(b)
+  printf("Before first parallel: a = %d, b = %d; &a = %p, &b = %p, &c = %p\n",
+         a, b, &a, &b, &c);
+#pragma omp parallel num_threads(2) firstprivate(a) firstprivate(b)            \
+    firstprivate(c) firstprivate(d)
   {
     auto tid = omp_get_thread_num();
-    printf("First parallel: thread %d, a = %d, b = %d\n", tid, a, b);
+    printf("First parallel: thread %d, a = %d, b = %d; &a = %p, &b = %p, &c = "
+           "%p, &d = %p\n",
+           tid, a, b, &a, &b, &c, &d);
     a++;
     b++;
     printf("First parallel: after increment; thread %d, a = %d, b = %d\n", tid,
@@ -31,11 +38,13 @@ int main() {
   }
   printf("After first parallel: a = %d, b = %d\n", a, b);
 
-  printf("Before second parallel: a = %d, b = %d\n", a, b);
+  printf("Before second parallel: a = %d, b = %d; &a = %p, &b = %p\n", a, b, &a,
+         &b);
 #pragma omp parallel num_threads(4) shared(a) private(b)
   {
     auto tid = omp_get_thread_num();
-    printf("Second parallel: thread %d, a = %d, b = %d\n", tid, a, b);
+    printf("Second parallel: thread %d, a = %d, b = %d; &a = %p, &b = %p\n",
+           tid, a, b, &a, &b);
     a--;
     b--;
     printf("Second parallel: after decrement; thread %d, a = %d, b = %d\n", tid,
