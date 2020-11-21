@@ -25,19 +25,16 @@ void print_arr(int **arr, size_t m, size_t n) {
 
 std::pair<int, int> minmax(int **arr, size_t m, size_t n) {
   int min = arr[0][0], max = arr[0][0];
-  
+
 #pragma omp parallel for collapse(2)
   for (size_t i = 0; i < m; i++) {
     for (size_t j = 0; j < n; j++) {
       // omp critical section name is global, not a good choice for this case
 #pragma omp critical(minmax_search)
       {
-        // skip the first element
-        if (!(i == 0 && j == 0)) {
-          auto curr = arr[i][j];
-          min = curr < min ? curr : min;
-          max = curr > max ? curr : max;
-        }
+        auto curr = arr[i][j];
+        min = curr < min ? curr : min;
+        max = curr > max ? curr : max;
       }
     }
   }
